@@ -65,4 +65,4 @@ In TimeBank, time is the primary currency. Every user starts with a balance of T
 Detailed instructions for users can be found in the [User Guide](USER_GUIDE.md).
 
 ---
-*Built with ❤️ for the community of lifelong learners.*
+*Built with ❤️ by **Nagaraj Patil** for the community of lifelong learners.*
