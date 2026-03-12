@@ -1,0 +1,84 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Sign Up – TimeBank{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Create Account</h1>
+            <p>Join TimeBank and start exchanging skills</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="django-form-errors">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label" for="id_username">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                <div class="errorlist">{% for e in form.username.errors %}<li>{{ e }}</li>{% endfor %}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_email">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_password1">Password</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                <div class="errorlist">{% for e in form.password1.errors %}<li>{{ e }}</li>{% endfor %}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_password2">Confirm Password</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                <div class="errorlist">{% for e in form.password2.errors %}<li>{{ e }}</li>{% endfor %}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Choose Your Role</label>
+                <div class="role-selector">
+                    <label class="role-option">
+                        <input type="radio" name="role" value="instructor" {% if form.role.value == 'instructor' %}checked{% endif %}>
+                        <div class="role-card">
+                            <span class="role-emoji">👩‍🏫</span>
+                            <span class="role-title">Instructor</span>
+                            <span class="role-desc">Share your skills & earn coins</span>
+                        </div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="learner" {% if form.role.value != 'instructor' %}checked{% endif %}>
+                        <div class="role-card">
+                            <span class="role-emoji">🎓</span>
+                            <span class="role-title">Learner</span>
+                            <span class="role-desc">Learn new skills from others</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'login' %}">Log in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

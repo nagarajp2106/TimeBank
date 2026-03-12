@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ action }} Course – TimeBank{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="container" style="max-width: 700px;">
+        <div class="page-header">
+            <h1>{% if action == 'Edit' %}✏️{% else %}➕{% endif %} {{ action }} Course</h1>
+            <p>{% if action == 'Edit' %}Update your course information.{% else %}Share your knowledge with the community.{% endif %}</p>
+        </div>
+
+        <div class="glass-card">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="django-form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label">Course Title</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}<div class="errorlist">{% for e in form.title.errors %}<li>{{ e }}</li>{% endfor %}</div>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}<div class="errorlist">{% for e in form.description.errors %}<li>{{ e }}</li>{% endfor %}</div>{% endif %}
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}<div class="errorlist">{% for e in form.category.errors %}<li>{{ e }}</li>{% endfor %}</div>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Duration</label>
+                        {{ form.duration }}
+                        {% if form.duration.errors %}<div class="errorlist">{% for e in form.duration.errors %}<li>{{ e }}</li>{% endfor %}</div>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Time Coins Required</label>
+                    {{ form.cost }}
+                    {% if form.cost.errors %}<div class="errorlist">{% for e in form.cost.errors %}<li>{{ e }}</li>{% endfor %}</div>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">YouTube Video URL</label>
+                    {{ form.youtube_url }}
+                    <div class="form-help">Paste a YouTube link — the video will be embedded for students to watch.</div>
+                    {% if form.youtube_url.errors %}<div class="errorlist">{% for e in form.youtube_url.errors %}<li>{{ e }}</li>{% endfor %}</div>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Course Notes</label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}<div class="errorlist">{% for e in form.notes.errors %}<li>{{ e }}</li>{% endfor %}</div>{% endif %}
+                </div>
+
+                <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
+                    <button type="submit" class="btn btn-primary btn-lg" style="flex: 1;">
+                        {% if action == 'Edit' %}💾 Save Changes{% else %}🚀 Create Course{% endif %}
+                    </button>
+                    <a href="{% url 'instructor_dashboard' %}" class="btn btn-secondary btn-lg">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

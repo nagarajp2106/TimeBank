@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TimeBank – Exchange skills, earn Time Coins, and learn from your community.">
+    <title>{% block title %}TimeBank{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="main-nav">
+        <div class="nav-container">
+            <a href="{% url 'landing' %}" class="nav-logo">
+                <span class="logo-icon">⏱</span>
+                <span class="logo-text">Time<span class="logo-accent">Bank</span></span>
+            </a>
+
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a></li>
+                    <li><a href="{% url 'marketplace' %}" class="nav-link">Marketplace</a></li>
+                    <li><a href="{% url 'wallet' %}" class="nav-link">
+                        <span class="coin-icon">🪙</span> {{ user.wallet.balance }} Coins
+                    </a></li>
+                    {% if user.is_instructor %}
+                        <li><a href="{% url 'create_course' %}" class="nav-link btn-nav">+ New Course</a></li>
+                    {% endif %}
+                    <li class="nav-user-menu">
+                        <span class="nav-avatar">{{ user.username|first|upper }}</span>
+                        <a href="{% url 'logout' %}" class="nav-link nav-logout">Logout</a>
+                    </li>
+                {% else %}
+                    <li><a href="#features" class="nav-link">Features</a></li>
+                    <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+                    <li><a href="{% url 'login' %}" class="nav-link">Login</a></li>
+                    <li><a href="{% url 'signup' %}" class="nav-link btn-nav">Get Started</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Toast Messages -->
+    {% if messages %}
+    <div class="toast-container" id="toast-container">
+        {% for message in messages %}
+        <div class="toast toast-{{ message.tags }}" data-auto-dismiss>
+            <span class="toast-icon">
+                {% if message.tags == 'success' %}✓{% elif message.tags == 'error' %}✕{% elif message.tags == 'warning' %}⚠{% else %}ℹ{% endif %}
+            </span>
+            <span class="toast-text">{{ message }}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="logo-icon">⏱</span>
+                    <span class="logo-text">Time<span class="logo-accent">Bank</span></span>
+                    <p class="footer-tagline">Exchange skills. Earn time. Grow together.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Platform</h4>
+                    <a href="{% url 'marketplace' %}">Marketplace</a>
+                    <a href="{% url 'signup' %}">Sign Up</a>
+                    <a href="{% url 'login' %}">Login</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Community</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact</a>
+                    <a href="#">FAQ</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TimeBank. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'core/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

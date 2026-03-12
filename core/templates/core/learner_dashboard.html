@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Learner Dashboard – TimeBank{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>🎓 Learner Dashboard</h1>
+            <p>Welcome back, {{ user.username }}! Track your learning journey.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🪙</div>
+                <div class="stat-value">{{ wallet.balance }}</div>
+                <div class="stat-label">Time Coins Balance</div>
+            </div>
+            <div class="stat-card accent-green">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value">{{ enrolled_count }}</div>
+                <div class="stat-label">Enrolled Courses</div>
+            </div>
+            <div class="stat-card accent-warning">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-value">{{ pending_requests.count }}</div>
+                <div class="stat-label">Pending Requests</div>
+            </div>
+            <div class="stat-card accent-info">
+                <div class="stat-icon">💸</div>
+                <div class="stat-value">{{ coins_spent }}</div>
+                <div class="stat-label">Coins Spent</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mb-2" style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
+            <a href="{% url 'marketplace' %}" class="btn btn-primary">🛒 Browse Marketplace</a>
+            <a href="{% url 'my_courses' %}" class="btn btn-secondary">📖 My Courses</a>
+            <a href="{% url 'wallet' %}" class="btn btn-secondary">💰 View Wallet</a>
+        </div>
+
+        <!-- Pending Requests -->
+        {% if pending_requests %}
+        <div class="mb-2">
+            <h2 class="section-title">⏳ Pending Enrollment Requests</h2>
+            <div class="courses-grid">
+                {% for enrollment in pending_requests %}
+                <div class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-category">{{ enrollment.course.get_category_display }}</span>
+                        <h3>{{ enrollment.course.title }}</h3>
+                    </div>
+                    <div class="course-card-body">
+                        <p>Instructor: {{ enrollment.course.instructor.username }}</p>
+                    </div>
+                    <div class="course-card-footer">
+                        <span class="badge badge-pending">⏳ Pending</span>
+                        <span class="course-cost">🪙 {{ enrollment.course.cost }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Enrolled Courses -->
+        {% if enrolled_courses %}
+        <div>
+            <h2 class="section-title">📖 Enrolled Courses</h2>
+            <div class="courses-grid">
+                {% for enrollment in enrolled_courses %}
+                <div class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-category">{{ enrollment.course.get_category_display }}</span>
+                        <h3>{{ enrollment.course.title }}</h3>
+                    </div>
+                    <div class="course-card-body">
+                        <p>{{ enrollment.course.description|truncatewords:20 }}</p>
+                    </div>
+                    <div class="course-card-footer">
+                        <div class="course-meta">
+                            <span>👩‍🏫 {{ enrollment.course.instructor.username }}</span>
+                        </div>
+                        <a href="{% url 'course_detail' enrollment.course.id %}" class="btn btn-primary btn-sm">View Course</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state card">
+            <div class="empty-state-icon">📚</div>
+            <h3>No enrolled courses yet</h3>
+            <p>Browse the marketplace and find amazing skills to learn!</p>
+            <a href="{% url 'marketplace' %}" class="btn btn-primary">Browse Marketplace</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

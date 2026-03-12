@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Delete Course – TimeBank{% endblock %}
+
+{% block content %}
+<div class="confirm-page">
+    <div class="glass-card confirm-card">
+        <div class="confirm-icon">⚠️</div>
+        <h2>Delete "{{ course.title }}"?</h2>
+        <p>This action cannot be undone. All enrollment data for this course will be permanently removed.</p>
+        <div class="confirm-buttons">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg">🗑️ Yes, Delete</button>
+            </form>
+            <a href="{% url 'instructor_dashboard' %}" class="btn btn-secondary btn-lg">Cancel</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

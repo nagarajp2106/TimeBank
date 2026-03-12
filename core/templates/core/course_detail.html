@@ -1,0 +1,115 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ course.title }} – TimeBank{% endblock %}
+
+{% block content %}
+<div class="course-detail-page">
+    <div class="container">
+        <div class="course-detail-grid">
+            <!-- Main Content -->
+            <div class="course-detail-main">
+                <div>
+                    <span class="course-category">{{ course.get_category_display }}</span>
+                    <h1 style="font-size: 2rem; font-weight: 700; margin-top: var(--space-sm);">{{ course.title }}</h1>
+                    <p class="text-muted mt-1" style="font-size: 0.9rem;">
+                        By <strong>{{ course.instructor.username }}</strong> · Created {{ course.created_at|timesince }} ago
+                    </p>
+                </div>
+
+                <!-- YouTube Video Player -->
+                {% if embed_url %}
+                <div class="video-container">
+                    <iframe 
+                        src="{{ embed_url }}" 
+                        title="{{ course.title }}" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                {% else %}
+                <div class="video-container">
+                    <div class="video-placeholder">🎥<br><span style="font-size: 1rem;">No video available</span></div>
+                </div>
+                {% endif %}
+
+                <!-- Description -->
+                <div class="course-notes">
+                    <h3>📝 Description</h3>
+                    <div class="course-notes-content">{{ course.description }}</div>
+                </div>
+
+                <!-- Course Notes -->
+                {% if course.notes %}
+                <div class="course-notes">
+                    <h3>📋 Course Notes</h3>
+                    <div class="course-notes-content">{{ course.notes }}</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="course-sidebar">
+                <div class="sidebar-card">
+                    <h2>Course Info</h2>
+                    <div class="sidebar-info">
+                        <div class="sidebar-info-item">
+                            <span class="sidebar-info-label">Instructor</span>
+                            <span class="sidebar-info-value">{{ course.instructor.username }}</span>
+                        </div>
+                        <div class="sidebar-info-item">
+                            <span class="sidebar-info-label">Category</span>
+                            <span class="sidebar-info-value">{{ course.get_category_display }}</span>
+                        </div>
+                        <div class="sidebar-info-item">
+                            <span class="sidebar-info-label">Duration</span>
+                            <span class="sidebar-info-value">{{ course.duration }}</span>
+                        </div>
+                        <div class="sidebar-info-item">
+                            <span class="sidebar-info-label">Cost</span>
+                            <span class="sidebar-info-value course-cost">🪙 {{ course.cost }} Coins</span>
+                        </div>
+                        <div class="sidebar-info-item">
+                            <span class="sidebar-info-label">Students</span>
+                            <span class="sidebar-info-value">{{ course.enrolled_count }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Card -->
+                <div class="sidebar-card">
+                    {% if user.is_instructor and course.instructor == user %}
+                        <a href="{% url 'edit_course' course.id %}" class="btn btn-primary btn-block mb-1">✏️ Edit Course</a>
+                        <a href="{% url 'delete_course' course.id %}" class="btn btn-danger btn-block">🗑️ Delete Course</a>
+                    {% elif user.is_learner %}
+                        {% if is_enrolled %}
+                            <div class="badge badge-approved" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.9rem; margin-bottom: var(--space-md);">
+                                ✓ Enrolled
+                            </div>
+                            <p class="text-muted" style="text-align: center; font-size: 0.85rem;">You have full access to this course.</p>
+                        {% elif enrollment_status == 'pending' %}
+                            <div class="badge badge-pending" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.9rem;">
+                                ⏳ Enrollment Pending
+                            </div>
+                            <p class="text-muted mt-1" style="text-align: center; font-size: 0.85rem;">Waiting for instructor approval.</p>
+                        {% elif enrollment_status == 'rejected' %}
+                            <div class="badge badge-rejected" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.9rem;">
+                                ✕ Enrollment Rejected
+                            </div>
+                        {% else %}
+                            <form method="post" action="{% url 'enroll_course' course.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-block btn-lg">
+                                    🪙 Enroll for {{ course.cost }} Coins
+                                </button>
+                            </form>
+                            <p class="text-muted mt-1" style="text-align: center; font-size: 0.85rem;">
+                                Your balance: 🪙 {{ user.wallet.balance }} coins
+                            </p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

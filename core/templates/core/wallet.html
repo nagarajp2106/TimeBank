@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Wallet – TimeBank{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="container" style="max-width: 800px;">
+        <div class="page-header">
+            <h1>💰 My Wallet</h1>
+            <p>Track your Time Coin balance and transaction history.</p>
+        </div>
+
+        <!-- Balance -->
+        <div class="wallet-balance-card">
+            <div class="wallet-balance-value">🪙 {{ wallet.balance }}</div>
+            <div class="wallet-balance-label">Time Coins Available</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="wallet-stats">
+            <div class="wallet-stat">
+                <div class="wallet-stat-value earned">+{{ total_earned }}</div>
+                <div class="wallet-stat-label">Total Earned</div>
+            </div>
+            <div class="wallet-stat">
+                <div class="wallet-stat-value spent">-{{ total_spent }}</div>
+                <div class="wallet-stat-label">Total Spent</div>
+            </div>
+        </div>
+
+        <!-- Transaction History -->
+        <h2 class="section-title">📜 Transaction History</h2>
+
+        {% if transactions %}
+        <div class="transaction-list">
+            {% for tx in transactions %}
+            <div class="transaction-item">
+                <div class="transaction-info">
+                    <span class="transaction-desc">{{ tx.description }}</span>
+                    <span class="transaction-date">{{ tx.timestamp|date:"M d, Y · h:i A" }}</span>
+                </div>
+                {% if tx.receiver == user %}
+                    <span class="transaction-amount credit">+{{ tx.amount }} 🪙</span>
+                {% else %}
+                    <span class="transaction-amount debit">-{{ tx.amount }} 🪙</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state card">
+            <div class="empty-state-icon">📜</div>
+            <h3>No transactions yet</h3>
+            <p>Your transaction history will appear here once you start exchanging Time Coins.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

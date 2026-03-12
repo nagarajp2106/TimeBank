@@ -1,0 +1,124 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Instructor Dashboard – TimeBank{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>👩‍🏫 Instructor Dashboard</h1>
+            <p>Welcome back, {{ user.username }}! Manage your courses and students.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🪙</div>
+                <div class="stat-value">{{ wallet.balance }}</div>
+                <div class="stat-label">Time Coins Balance</div>
+            </div>
+            <div class="stat-card accent-green">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value">{{ coins_earned }}</div>
+                <div class="stat-label">Coins Earned</div>
+            </div>
+            <div class="stat-card accent-info">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value">{{ total_courses }}</div>
+                <div class="stat-label">Courses Created</div>
+            </div>
+            <div class="stat-card accent-warning">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value">{{ total_students }}</div>
+                <div class="stat-label">Enrolled Students</div>
+            </div>
+        </div>
+
+        <!-- Pending Enrollment Requests -->
+        {% if pending_requests %}
+        <div class="mb-2">
+            <h2 class="section-title">📋 Pending Enrollment Requests</h2>
+            <table class="requests-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Cost</th>
+                        <th>Requested</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in pending_requests %}
+                    <tr>
+                        <td>
+                            <span class="nav-avatar" style="margin-right: 8px; font-size: 0.7rem;">{{ enrollment.learner.username|first|upper }}</span>
+                            {{ enrollment.learner.username }}
+                        </td>
+                        <td>{{ enrollment.course.title }}</td>
+                        <td><span class="course-cost">🪙 {{ enrollment.course.cost }}</span></td>
+                        <td>{{ enrollment.requested_at|timesince }} ago</td>
+                        <td>
+                            <div class="request-actions">
+                                <form method="post" action="{% url 'manage_enrollment' enrollment.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="approve">
+                                    <button type="submit" class="btn btn-success btn-sm">✓ Approve</button>
+                                </form>
+                                <form method="post" action="{% url 'manage_enrollment' enrollment.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="reject">
+                                    <button type="submit" class="btn btn-danger btn-sm">✕ Reject</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <!-- My Courses -->
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h2 class="section-title" style="margin-bottom: 0;">📚 My Courses</h2>
+                <a href="{% url 'create_course' %}" class="btn btn-primary">+ New Course</a>
+            </div>
+
+            {% if courses %}
+            <div class="courses-grid">
+                {% for course in courses %}
+                <div class="course-card">
+                    <div class="course-card-header">
+                        <span class="course-category">{{ course.get_category_display }}</span>
+                        <h3>{{ course.title }}</h3>
+                    </div>
+                    <div class="course-card-body">
+                        <p>{{ course.description }}</p>
+                    </div>
+                    <div class="course-card-footer">
+                        <div class="course-meta">
+                            <span>👥 {{ course.enrolled_count }} enrolled</span>
+                            <span>⏳ {{ course.pending_count }} pending</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="{% url 'edit_course' course.id %}" class="btn btn-secondary btn-sm">Edit</a>
+                            <a href="{% url 'delete_course' course.id %}" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state card">
+                <div class="empty-state-icon">📝</div>
+                <h3>No courses yet</h3>
+                <p>Create your first course to start teaching and earning Time Coins!</p>
+                <a href="{% url 'create_course' %}" class="btn btn-primary">Create Course</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
