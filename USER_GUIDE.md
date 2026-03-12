@@ -56,3 +56,6 @@ Your personal dashboard shows:
 - **Login Issues**: Ensure your username and password are correct.
 - **Insufficient Coins**: If you run out of coins, consider creating a course to share a skill you already have!
 - **Video Not Loading**: Ensure the YouTube link provided by the instructor is valid.
+
+---
+**Developed by: Nagaraj Patil**
