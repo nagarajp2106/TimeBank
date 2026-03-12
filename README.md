@@ -16,7 +16,7 @@ In TimeBank, time is the primary currency. Every user starts with a balance of T
 
 ## 🛠 Tech Stack
 - **Backend**: Django (Python)
-- **Frontend**: HTML5, Vanilla CSS, JavaScript
+- **Frontend**: HTML5, CSS, JavaScript
 - **Database**: SQLite (Development)
 - **Media**: Support for Profile Pictures and YouTube Embeds
 
